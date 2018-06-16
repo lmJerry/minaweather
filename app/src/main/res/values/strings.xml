@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MinaWeather</string>
+    <string name="aqi">空气质量</string>
+    <string name="aqi_text">AQI指数</string>
+    <string name="pm25_text">PM2.5指数</string>
+    <string name="suggestion">生活建议</string>
 </resources>
