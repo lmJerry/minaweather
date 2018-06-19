@@ -1,7 +1,14 @@
 <resources>
-    <string name="app_name">MinaWeather</string>
+    <string name="app_name">咪呐天气</string>
     <string name="aqi">空气质量</string>
     <string name="aqi_text">AQI指数</string>
     <string name="pm25_text">PM2.5指数</string>
     <string name="suggestion">生活建议</string>
+    <string name="setting_item">设置</string>
+    <string name="choose_area_item">城市管理</string>
+    <string name="about_item">关于</string>
+    <string name="from_heweather">数据来源 和风天气</string>
+    <string name="hum_text">相对湿度</string>
+    <string name="fell_text">体感温度</string>
+    <string name="pressure_text">气压强度</string>
 </resources>

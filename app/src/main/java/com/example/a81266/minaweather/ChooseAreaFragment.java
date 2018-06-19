@@ -82,6 +82,7 @@ public class ChooseAreaFragment extends Fragment {
                         activity.drawerLayout.closeDrawers();
                         activity.swipeRefresh.setRefreshing(true);
                         activity.requestWeather(weatherId);
+                        queryProvinces();
                     }
                 }
             }
@@ -101,7 +102,7 @@ public class ChooseAreaFragment extends Fragment {
 
     private void queryProvinces() {
         tv_title.setText("城市管理");
-        bt_return.setVisibility(View.GONE);
+        bt_return.setVisibility(View.VISIBLE);
         provinceList = DataSupport.findAll(Province.class);
         if (provinceList.size()>0){
             dataList.clear();

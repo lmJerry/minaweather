@@ -10,8 +10,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -34,13 +36,14 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class WeatherActivity extends AppCompatActivity {
+    private Toolbar toolbar;
     public DrawerLayout drawerLayout;
     private Button settingButton;
     public SwipeRefreshLayout swipeRefresh;
     private String mWeatherId;
     private ScrollView weatherLayout;
     private TextView titleCity;
-    private TextView titleUpdateTime;
+//    private TextView titleUpdateTime;
     private TextView degreeText;
     private TextView weatherInfoText;
     private LinearLayout forecastLayout;
@@ -50,6 +53,11 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView carWashText;
     private TextView sportText;
     private ImageView bingPicImg;
+    private TextView windDirectionText;
+    private TextView windScaleText;
+    private TextView humidityText;
+    private TextView feelText;
+    private TextView pressureText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,11 +67,19 @@ public class WeatherActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
         setContentView(R.layout.activity_weather);
+        toolbar = findViewById(R.id.tool_bar);
+        toolbar.setTitle(" ");
+        setSupportActionBar(toolbar);
+        windDirectionText = findViewById(R.id.wind_direction_text);
+        windScaleText = findViewById(R.id.wind_scale_text);
+        humidityText = findViewById(R.id.humidity_text);
+        feelText = findViewById(R.id.feel_temp_text);
+        pressureText = findViewById(R.id.pressure_text);
         drawerLayout = findViewById(R.id.drawer_layout);
         settingButton = findViewById(R.id.setting_button);
         weatherLayout = findViewById(R.id.weather_layout);
         titleCity = findViewById(R.id.title_city);
-        titleUpdateTime = findViewById(R.id.title_update_time);
+//        titleUpdateTime = findViewById(R.id.title_update_time);
         degreeText = findViewById(R.id.degree_text);
         weatherInfoText = findViewById(R.id.weather_info_text);
         forecastLayout = findViewById(R.id.forecast_layout);
@@ -172,38 +188,72 @@ public class WeatherActivity extends AppCompatActivity {
 
     private void showWeatherInfo(Weather weather) {
         String cityName = weather.basic.cityName;
-        String updateTime = weather.basic.update.updateTime.split(" ")[1];
+//        String updateTime = weather.basic.update.updateTime.split(" ")[1];
         String degree = weather.now.temperature+"℃";
-        String weatherInfo = weather.now.more.info;
+        String weatherInfo = weather.now.more.info+" "+"|"+" "+weather.aqi.city.qlty+" "+weather.aqi.city.aqi;
+        String windDirection = weather.now.windDirection;
+        String windScale = weather.now.windScale+" 级";
+        String humidity = weather.now.humidity+"%";
+        String feel = weather.now.feel+"℃";
+        String pressure = weather.now.pressure+"hPa";
         titleCity.setText(cityName);
-        titleUpdateTime.setText(updateTime);
+//        titleUpdateTime.setText(updateTime);
         degreeText.setText(degree);
         weatherInfoText.setText(weatherInfo);
+        windDirectionText.setText(windDirection);
+        windScaleText.setText(windScale);
+        humidityText.setText(humidity);
+        feelText.setText(feel);
+        pressureText.setText(pressure);
         forecastLayout.removeAllViews();
         for (Forecast forecast:weather.forecastList){
             View view = LayoutInflater.from(this).inflate(R.layout.forecast_item,forecastLayout,false);
             TextView dateText = view.findViewById(R.id.date_text);
             TextView infoText = view.findViewById(R.id.info_text);
             TextView maxText = view.findViewById(R.id.max_text);
+            TextView toText = view.findViewById(R.id.to_text);
             TextView minText = view.findViewById(R.id.min_text);
+            String maxTemp = forecast.temperature.max+"°";
+            String minTemp = forecast.temperature.min+"°";
             dateText.setText(forecast.date);
             infoText.setText(forecast.more.info);
-            maxText.setText(forecast.temperature.max);
-            minText.setText(forecast.temperature.min);
+            maxText.setText(maxTemp);
+            toText.setText("~");
+            minText.setText(minTemp);
             forecastLayout.addView(view);
         }
         if (weather.aqi!=null){
             aqiText.setText(weather.aqi.city.aqi);
             pm25Text.setText(weather.aqi.city.pm25);
         }
-        String comfort = "舒适程度："+weather.suggestion.comfort.info;
-        String carWash = "洗车指数："+weather.suggestion.carWash.info;
-        String sport = "运动指数："+weather.suggestion.sport.info;
+        String comfort = "舒适程度："+weather.suggestion.comfort.brf+"，"+weather.suggestion.comfort.info;
+        String carWash = "洗车指数："+weather.suggestion.carWash.brf+"，"+weather.suggestion.carWash.info;
+        String sport = "运动指数："+weather.suggestion.sport.brf+"，"+weather.suggestion.sport.info;
         comfortText.setText(comfort);
         carWashText.setText(carWash);
         sportText.setText(sport);weatherLayout.setVisibility(View.VISIBLE);
         weatherLayout.setVisibility(View.VISIBLE);
         Intent intent = new Intent(this, AutoUpdateService.class);
         startService(intent);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.setting_item:
+                break;
+            case R.id.choose_area_item:
+                drawerLayout.openDrawer(GravityCompat.START);
+                break;
+            case R.id.about_item:
+                break;
+            default:
+        }
+        return true;
     }
 }
